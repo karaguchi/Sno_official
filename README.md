@@ -1,1 +1,1 @@
-# my-team-project# Sno_official
+# Sno_official
