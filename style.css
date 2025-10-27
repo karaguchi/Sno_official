@@ -1,0 +1,12 @@
+body {
+    background: #333;
+    margin: auto;
+    padding: 0 10%;
+    width: 100%;
+}
+h1 {
+    color: #222;
+}
+.news a {
+    color: #555;
+}
