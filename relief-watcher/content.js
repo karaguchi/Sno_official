@@ -1,10 +1,10 @@
 // content.js
-console.log("監視プログラムが起動したよ！");
+console.log("監視プログラム起動！");
 
 const checkTicket = () => {
   const targetText = "購入"; 
   if (document.body.innerText.includes(targetText)) {
-    alert("チケットが出たよ！");
+    alert("ticket!!");
   } else {
     const randomDelay = Math.floor(Math.random() * (3000 - 1500) + 1500);
     setTimeout(() => {
