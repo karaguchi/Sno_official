@@ -1,0 +1,50 @@
+body {
+    background: #999999;
+    margin: auto;
+    padding: 0 10%;
+    width: 100%;
+    color: #333;
+}
+h1 {
+    color: #666;
+}
+.news a {
+    color: #555;
+}
+
+.iwa {
+color: #ffff66;
+opacity: 0.5;
+}
+.raul {
+color: #f2f2f2;
+opacity: 0.5;
+}
+.fuka {
+color: #cc55ff;
+opacity: 0.5;
+}
+.nabe {
+color: #5588ff;
+opacity: 0.5;
+}
+.koji {
+color: #ffaa44;
+opacity: 0.5;
+}
+.abe {
+color: #77ff33;
+opacity: 0.5;
+}
+.meme {
+color: #2f2f2f;
+opacity: 0.5;
+}
+.date {
+color: #ff3333;
+opacity: 0.5;
+}
+.saku {
+color: #ff44dd;
+opacity: 0.5;
+}
