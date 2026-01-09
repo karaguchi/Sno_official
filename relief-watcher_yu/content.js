@@ -316,7 +316,7 @@ const fillCompanionInfo = () => {
 const startApp = () => {
   const bodyText = document.body.innerText || "";
   const targetDetailUrl =
-    "https://relief-ticket.jp/events/artist/11/121";
+    "https://relief-ticket.jp/events/artist/31/118";
 
   if (
     /50[0-9]/.test(document.title) ||
@@ -341,7 +341,7 @@ const startApp = () => {
 
   if (
     location.pathname === "/" ||
-    location.pathname === "/events/artist/11"
+    location.pathname === "/events/artist/31"
   ) {
     setTimeout(() => reloadWithCacheBust(targetDetailUrl), 500);
     return;

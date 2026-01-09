@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "チケット出現監視【代表者：結】",
   "description": "セットした曜日順に優先してチケットを購入する",
-  "version": "6.5",
+  "version": "6.5.1",
   "content_scripts": [
     {
       "matches": [
