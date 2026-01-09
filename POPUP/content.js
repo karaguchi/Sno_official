@@ -11,15 +11,14 @@
 // 行ける日付のIDを優先順位順にリストアップ
     const TARGET_DATES = [
     "id-2026-02-08"
-  //  ,"id-2026-02-11"
-  //  ,"id-2026-02-14"
+    // ,"id-2026-02-11"
+    // ,"id-2026-02-14"
 ];
 
 // 除外したい開始時間（全日程共通）
     const ignoreStartList = ["10:00", "19:00"];
 
-
-const DEBUG_LOG = true;
+    
 const saveLog = (msg) => {
   if (DEBUG_LOG) {
     const ts = new Date().toLocaleTimeString();
