@@ -1,13 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "チケット出現監視【代表者：結】",
-  "description": "セットした曜日順に優先してチケットを購入する",
-  "version": "6.5.1",
+  "name": "Snow Man 1stPOPUP",
+  "description": "日時を指定し空きがあればクリック",
+  "version": "1.0.0",
   "content_scripts": [
     {
       "matches": [
-        "https://relief-ticket.jp/*",
-        "https://my.relief-ticket.jp/*"
+        "https://snowman1stpopup-japan.com/*"
       ],
       "js": ["content.js"]
     }
