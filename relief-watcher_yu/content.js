@@ -1,6 +1,6 @@
 // ==========================================
 // チケット出現監視【代表者：結】
-// version: 6.5
+// version: 6.5.2
 // ==========================================
 
 
@@ -8,7 +8,7 @@
 // ★切り替えスイッチ　true / false
 // ==========================================
 const DEBUG_LOG = true;          // console.log ON/OFF
-const ENABLE_AUTO_PROCEED = true; // SMS認証画面で自動押下
+const ENABLE_AUTO_PROCEED = false; // SMS認証画面で自動押下
 
 
 // ==========================================
@@ -93,7 +93,7 @@ const isAfterBuyPage = () =>
 // ==========================================
 // 4.5 曜日判定（優先順あり）
 // ==========================================
-const allowedDays = ["(土)", "(金)", "(木)", "(水)"];
+const allowedDays = ["(日)", "(月)", "(火)", "(水)"];
 
 const getDayFromSelect = (select) => {
   const container =
