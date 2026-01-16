@@ -87,7 +87,7 @@ const checkAndLog = () => {
           sessionStorage.setItem(notifyKey, "1");
           
           // 目立つようにコンソールにも出力
-          console.warn("⚠️ 条件に合うチケットを見つけました！手動で操作してください。");
+          console.warn("💚 条件に合うチケットを見つけました！手動で操作してください。");
         }
       }
     }
@@ -105,7 +105,7 @@ const checkAndLog = () => {
     );
   } else {
     // ★追加：見つかった時に更新を止めるログ
-    saveLog("🛑 チケットを発見したため、自動更新を停止しました。");
+    saveLog("💚 チケットを発見したため、自動更新を停止しました。");
   }
 };
 
