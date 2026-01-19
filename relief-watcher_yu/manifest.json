@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "チケット出現監視【代表者：結】",
-  "description": "セットした曜日順に優先してチケットを購入する",
-  "version": "6.6.1",
+  "description": "セットした曜日順に優先してSMS認証まで辿り着かせるツール",
+  "version": "6.7.2",
   "content_scripts": [
     {
       "matches": [

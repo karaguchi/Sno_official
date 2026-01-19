@@ -1,6 +1,6 @@
 // ==========================================
 // チケット出現監視【代表者：結】
-// version: 6.7.2
+// version: 6.6.1
 // ==========================================
 
 
@@ -294,31 +294,9 @@ const fillCompanionInfo = () => {
 
     companionFilled = true;
     saveLog("👥 同行者情報を入力しました");
-    showStopWarning();
   }
 };
-  // ★ 認証画面突入後ガード
-  const AUTH_GUARD_TIME = 2000; // ms
-  const showStopWarning = () => {
-    const overlay = document.createElement("div");
-    overlay.style.cssText = `
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000000;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      color: white; font-family: sans-serif; text-align: center; padding: 20px; pointer-events: all;
-    `;
-    overlay.innerHTML = `
-      <h1 style="font-size: 5rem;">⚠️</h1>
-      <p style="font-size: 3rem; color: #ff3b30;">拡張機能をOFFにしてから次に進む！</p>
-    `;
-    document.body.appendChild(overlay);
-    saveLog("🛑 ロック画面を表示しました。");
 
-    // ★ 設定秒経過後に、自動でロックを解除する
-    setTimeout(() => {
-      overlay.remove();
-      saveLog("✅ ガード解除。手動で確定ボタンをクリックしてください");
-    }, AUTH_GUARD_TIME);
-  };
 
 // ==========================================
 // 9. 起動制御
