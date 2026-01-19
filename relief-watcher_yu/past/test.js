@@ -14,18 +14,21 @@
     // King & Prince 41/129
     // Travis Japan 38/124
     // timelesz 11/121
-    // 中島健人 42/131
-const ARTIST_ID = "42";
-const EVENT_ID = "131";
+    // なにわ男子 16/130
+const ARTIST_ID = "40";
+const EVENT_ID = "127";
 // 狙う枚数
 const TARGET_PIECES = "2";
 // 狙う日程の曜日 ※左側から優先 (日)(月)(火)(水)(木)(金)(土)
-const allowedDays = ["(金)", "(土)", "(日)"];
+const allowedDays = ["(土)", "(日)"];
 const TARGET_DETAIL_URL = `https://relief-ticket.jp/events/artist/${ARTIST_ID}/${EVENT_ID}`;
 const ARTIST_LIST_PATH = `/events/artist/${ARTIST_ID}`;
 
 // コンソールのログ ON/OFF
 const DEBUG_LOG = true;
+
+// ★ 認証画面突入後ガード時間（追加）
+const AUTH_GUARD_TIME = 1500; // ms
 
 
 // ==========================================
@@ -139,9 +142,10 @@ const getDayFromSelect = (select) => {
 
 
 // ==========================================
-// 6. 認証画面処理
+// 6. 認証画面処理（ガード追加）
 // ==========================================
 const handleAuthPage = () => {
+  // 初回突入
   if (
     location.href.includes("/checkout/attention") &&
     !sessionStorage.getItem("authEntered")
@@ -152,15 +156,12 @@ const handleAuthPage = () => {
     sessionStorage.setItem("authEnterTime", Date.now().toString());
     return;
   }
-  
-  // ★ 認証画面突入後ガード(今後のための保険)
-  // 認証画面突入後ガード時間
-  const AUTH_GUARD_TIME = 1500; // ms
+
+  // ★ 認証画面突入後ガード
   const enterTime = Number(sessionStorage.getItem("authEnterTime"));
   if (enterTime && Date.now() - enterTime < AUTH_GUARD_TIME) {
     return;
   }
-  // 安全ゾーン
 };
 
 
@@ -218,7 +219,7 @@ const checkAndProcess = () => {
   if (!candidates.length) {
     const delay = Math.floor(Math.random() * 300 + 1200);
     saveLog(`条件に合うチケットなし。 ${delay}ms後リロード`);
-    
+
     reloadTimer = setTimeout(
       reloadWithCacheBust,
       delay
