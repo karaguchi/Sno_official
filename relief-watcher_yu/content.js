@@ -15,12 +15,12 @@
     // Travis Japan 38/124
     // timelesz 11/121
     // 中島健人 42/131
-const ARTIST_ID = "42";
-const EVENT_ID = "131";
+const ARTIST_ID = "40";
+const EVENT_ID = "127";
 // 狙う枚数
 const TARGET_PIECES = "2";
 // 狙う日程の曜日 ※左側から優先 (日)(月)(火)(水)(木)(金)(土)
-const allowedDays = ["(金)", "(土)", "(日)"];
+const allowedDays = ["(土)","(日)","(金)"];
 const TARGET_DETAIL_URL = `https://relief-ticket.jp/events/artist/${ARTIST_ID}/${EVENT_ID}`;
 const ARTIST_LIST_PATH = `/events/artist/${ARTIST_ID}`;
 

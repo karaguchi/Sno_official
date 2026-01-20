@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "チケット出現監視【代表者：尚】",
-  "description": "セットした曜日順に優先してチケットを購入する",
-  "version": "6.5.2",
+  "name": "for RELIEF Ticket [ NAO ]",
+  "description": "同行者入力された後は手動でOFFにすること",
+  "version": "6.7.2",
   "content_scripts": [
     {
       "matches": [

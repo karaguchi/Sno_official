@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "チケット出現監視【代表者：結】",
-  "description": "セットした曜日順に優先してSMS認証まで辿り着かせるツール",
+  "name": "for RELIEF Ticket [ YU ]",
+  "description": "同行者入力された後は手動でOFFにすること",
   "version": "6.7.2",
   "content_scripts": [
     {
