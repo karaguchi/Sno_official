@@ -1,6 +1,6 @@
 // ==========================================
 // チケット出現監視【代表者：結】
-// version: 6.7.2
+// version: 6.7.3
 // ==========================================
 
 
@@ -10,7 +10,7 @@
 
 // 公演ページ設定
     // Snow Man 31/118
-    // SixTONES 40/127
+    // ‼️選択中‼️ SixTONES 40/127
     // King & Prince 41/129
     // Travis Japan 38/124
     // timelesz 11/121
@@ -175,7 +175,6 @@ const checkAndProcess = () => {
   if (reloadTimer) clearTimeout(reloadTimer);
 
   // ★スキャン開始ログ
-  console.log("%c-----------------------", "color: #93ab27;");
   saveLog("🔍 スキャン中...");
 
   let rows = document.querySelectorAll(
@@ -326,17 +325,20 @@ const fillCompanionInfo = () => {
 const startApp = () => {
   // 起動時の設定表示
   saveLog(`👤 代表者: 結`);
-  saveLog(`狙い: ${allowedDays.join(", ")} の ${TARGET_PIECES}枚`);
+  saveLog(`狙い: ${ARTIST_ID} の ${allowedDays.join(", ")} 順で ${TARGET_PIECES}枚`);
 
   const bodyText = document.body.innerText || "";
 
   if (
-    /50[0-9]/.test(document.title) ||
+    /5[0-9]{2}/.test(document.title) ||
+    bodyText.includes("502") ||
     bodyText.includes("504") ||
     bodyText.includes("エラー")
   ) {
-    saveLog("⚠️ サーバーエラーを検知。5秒後にリダイレクト。");
-    setTimeout(() => reloadWithCacheBust(TARGET_DETAIL_URL), 5000);
+
+    const errorDelay = Math.floor(Math.random() * 2800 + 3200);
+    saveLog(`⚠️ サーバーエラーを検知。${errorDelay}ms 後にリダイレクト。`);
+    setTimeout(() => reloadWithCacheBust(TARGET_DETAIL_URL), errorDelay);
     return;
   }
 
