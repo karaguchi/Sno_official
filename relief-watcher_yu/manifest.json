@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "for RELIEF Ticket [ YU ]",
-  "description": "同行者入力された後は手動でOFFにすること",
-  "version": "6.7.2",
+  "description": "同行者が自動入力された後は手動でOFFにする",
+  "version": "6.8.1",
   "content_scripts": [
     {
       "matches": [

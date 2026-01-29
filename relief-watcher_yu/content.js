@@ -1,6 +1,6 @@
 // ==========================================
 // チケット出現監視【代表者：結】
-// version: 6.7.3
+// version: 6.8.1
 // ==========================================
 
 
@@ -9,24 +9,39 @@
 // ==========================================
 
 // 公演ページ設定
-    // Snow Man 31/118
-    // ‼️選択中‼️ SixTONES 40/127
-    // King & Prince 41/129
-    // Travis Japan 38/124
     // timelesz 11/121
+    // ‼️選択中‼️ ジュニア 15/132
+    // Snow Man 31/118
+    // Travis Japan 38/124
+    // SixTONES 40/127
+    // King & Prince 41/129
     // 中島健人 42/131
-const ARTIST_ID = "40";
-const EVENT_ID = "127";
+const ARTIST_ID = "15";
+const EVENT_ID = "132";
+
 // 狙う枚数
-const TARGET_PIECES = "2";
-// 狙う日程の曜日 ※左側から優先 (日)(月)(火)(水)(木)(金)(土)
-const allowedDays = ["(土)","(日)","(金)"];
+    // 入力例→"1"
+    // 入力例→"2"
+    // 空なら枚数不問→""
+const TARGET_PIECES = "1";
+
+// 狙う日程の曜日
+    // 左側から優先 (日)(月)(火)(水)(木)(金)(土)
+const allowedDays = ["(日)","(土)","(月)","(金)"];
+
+// 狙う時間
+    // この時間以外はスルー→["13:00"]
+    // 左から優先→["13:00","18:00"]
+    // 空配列なら時間不問→[]
+const TARGET_TIMES = [];
+
+// コンソールのログ
+const DEBUG_LOG = true;
+// コンソール貼り付け用
+// JSON.parse(localStorage.getItem("ticket_logs") || []).join("\n")
+
 const TARGET_DETAIL_URL = `https://relief-ticket.jp/events/artist/${ARTIST_ID}/${EVENT_ID}`;
 const ARTIST_LIST_PATH = `/events/artist/${ARTIST_ID}`;
-
-// コンソールのログ ON/OFF
-const DEBUG_LOG = true;
-
 
 // ==========================================
 // 0. フェーズ管理
@@ -98,6 +113,7 @@ const reloadWithCacheBust = (targetUrl = location.href) => {
 // 4. 判定ロジック
 // ==========================================
 const isTargetTickets = (text) => {
+  if (!TARGET_PIECES) return /\d+\s*枚/.test(text);
   const zenkaku = String.fromCharCode(TARGET_PIECES.charCodeAt(0) + 0xFEE0);
   const reg = new RegExp(`(^|\\D)[${TARGET_PIECES}${zenkaku}]\\s*枚`);
   return reg.test(text);
@@ -113,7 +129,7 @@ const isAfterBuyPage = () =>
 
 
 // ==========================================
-// 4.5 曜日判定
+// 5. 曜日判定、時間取得
 // ==========================================
 const getDayFromSelect = (select) => {
   const container =
@@ -129,13 +145,10 @@ const getDayFromSelect = (select) => {
   return m ? m[0] : null;
 };
 
-
-// ==========================================
-// 5. 自動「進む」ボタン押下
-// ==========================================
-
-// 一旦削除
-
+const getTimeFromRow = (row) => {
+  const m = row.innerText.match(/\b\d{1,2}:\d{2}\b/);
+  return m ? m[0] : null;
+};
 
 
 // ==========================================
@@ -147,13 +160,36 @@ const handleAuthPage = () => {
     !sessionStorage.getItem("authEntered")
   ) {
     flashScreen();
-    saveLog("⚠️⚠️⚠️SMS認証フローに突入⚠️⚠️⚠️");
+    const t = sessionStorage.getItem("selected_show_time") || "不明";
+    saveLog(`⚠️⚠️⚠️SMS認証フローに突入（${t}）⚠️⚠️⚠️`);
     sessionStorage.setItem("authEntered", "1");
     sessionStorage.setItem("authEnterTime", Date.now().toString());
     return;
   }
+  // ★ 選択した公演時間を画面に表示
+  const selectedTime = sessionStorage.getItem("selected_show_time");
+  if (selectedTime && !document.getElementById("selected-show-time-badge")) {
+      const badge = document.createElement("div");
+      badge.id = "selected-show-time-badge";
+      badge.innerText = `🎫 選択回：${selectedTime}`;
+      badge.style.cssText = `
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        font-size: 24px;
+        font-weight: bold;
+        background: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 10px;
+        z-index: 1000001;
+        pointer-events: none;
+      `;
+      document.body.appendChild(badge);
+    }
+
   
-  // ★ 認証画面突入後ガード(今後のための保険)
+  // ★認証画面突入後ガード(今後のための保険)
   // 認証画面突入後ガード時間
   const AUTH_GUARD_TIME = 1500; // ms
   const enterTime = Number(sessionStorage.getItem("authEnterTime"));
@@ -193,6 +229,13 @@ const checkAndProcess = () => {
     const day = getDayFromSelect(select);
     if (!day || !allowedDays.includes(day)) continue;
 
+    const time = getTimeFromRow(row);
+    let timePriority = 0;
+    if (TARGET_TIMES.length) {
+      timePriority = TARGET_TIMES.indexOf(time);
+      if (timePriority === -1) continue;
+    }
+
     for (let i = 0; i < select.options.length; i++) {
       const optTxt = select.options[i].text.trim();
       if (!isTargetTickets(optTxt)) continue;
@@ -206,6 +249,7 @@ const checkAndProcess = () => {
       candidates.push({
         day,
         dayIndex: allowedDays.indexOf(day),
+        timePriority,
         select,
         optionIndex: i,
         optionText: optTxt,
@@ -225,7 +269,14 @@ const checkAndProcess = () => {
     return;
   }
 
-  candidates.sort((a, b) => a.dayIndex - b.dayIndex);
+  // ★ 時間 → 曜日 の優先順
+  candidates.sort((a, b) => {
+    if (a.timePriority !== b.timePriority) {
+      return a.timePriority - b.timePriority;
+    }
+    return a.dayIndex - b.dayIndex;
+  });
+
   const c = candidates[0];
 
   const notifyKey = `found_${c.day}_${c.optionText}`;
@@ -233,17 +284,26 @@ const checkAndProcess = () => {
     saveLog(`💚💚💚発見: ${c.day} ${c.optionText}💚💚💚`);
     sessionStorage.setItem(notifyKey, "1");
   }
-
+  
   c.select.selectedIndex = c.optionIndex;
   c.select.dispatchEvent(new Event("change", { bubbles: true }));
 
-  if (!hasClickedBuy) {
-    hasClickedBuy = true;
-    phase = PHASE.AUTH;
+if (!hasClickedBuy) {
+  hasClickedBuy = true;
+  phase = PHASE.AUTH;
 
-    saveLog(`❄️❄️❄️購入ボタンクリック: ${c.day} ${c.optionText}❄️❄️❄️`);
-    c.button.click();
-  }
+  const selectedTime = TARGET_TIMES.length
+    ? TARGET_TIMES[c.timePriority]
+    : getTimeFromRow(
+        c.select.closest(".perform-list, .card, .event-row")
+      ) || "不明";
+
+  sessionStorage.setItem("selected_show_time", selectedTime);
+
+  saveLog(`❄️❄️❄️購入ボタンクリック: ${c.day} ${c.optionText}❄️❄️❄️`);
+  c.button.click();
+}
+
 };
 
 
@@ -297,7 +357,7 @@ const fillCompanionInfo = () => {
   }
 };
   // ★ 認証画面突入後ガード
-  const AUTH_GUARD_TIME = 2000; // ms
+  const AUTH_GUARD_TIME = 4000; // ms
   const showStopWarning = () => {
     const overlay = document.createElement("div");
     overlay.style.cssText = `
@@ -306,8 +366,8 @@ const fillCompanionInfo = () => {
       color: white; font-family: sans-serif; text-align: center; padding: 20px; pointer-events: all;
     `;
     overlay.innerHTML = `
-      <h1 style="font-size: 5rem;">⚠️</h1>
-      <p style="font-size: 3rem; color: #ff3b30;">拡張機能をOFFにしてから次に進む！</p>
+      <h1 style="font-size: 6rem;">⚠️</h1>
+      <p style="font-size: 3rem; color: #ff3b30;">同行者が自動入力された後は<br>手動で拡張機能をOFFにしてから次に進む！</p>
     `;
     document.body.appendChild(overlay);
     saveLog("🛑 ロック画面を表示しました。");
@@ -325,7 +385,7 @@ const fillCompanionInfo = () => {
 const startApp = () => {
   // 起動時の設定表示
   saveLog(`👤 代表者: 結`);
-  saveLog(`狙い: ${ARTIST_ID} の ${allowedDays.join(", ")} 順で ${TARGET_PIECES}枚`);
+  saveLog(`狙い: ${ARTIST_ID} の ${allowedDays.join(", ")} / ${TARGET_TIMES.join(", ") || "時間不問"} / ${TARGET_PIECES || "枚数不問"}`);
 
   const bodyText = document.body.innerText || "";
 
