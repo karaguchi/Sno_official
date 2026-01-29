@@ -1,12 +1,20 @@
 // ==========================================
 // チケット出現監視【ログ記録のみ】
-// version: 1.0.1
+// version: 1.0.2
 // ==========================================
 
 // ==========================================
 // ★設定
 // ==========================================
-const DEBUG_LOG = true;
+// 公演ページ設定
+    // Snow Man 31/118
+    // ‼️選択中‼️ SixTONES 40/127
+    // King & Prince 41/129
+    // Travis Japan 38/124
+    // timelesz 11/121
+    // 中島健人 42/131
+
+    const DEBUG_LOG = true;
 
 // ==========================================
 // 1. ユーティリティ & ログ
@@ -35,9 +43,9 @@ const reloadWithCacheBust = (targetUrl = location.href) => {
 // ==========================================
 // 3. 判定ロジック
 // ==========================================
-const isTwoTickets = (text) => /(^|\D)[2２]\s*枚/.test(text);
+const isTwoTickets = (text) => /(^|\D)[1１2２]\s*枚/.test(text);
 
-const allowedDays = ["(日)", "(月)", "(火)", "(水)"];
+const allowedDays = ["(土)", "(日)", "(月)", "(火)", "(水)", "(木)", "(金)"];
 
 const getDayFromSelect = (select) => {
   const container =
@@ -95,7 +103,7 @@ const checkAndLog = () => {
 
   // 見つからなかった場合はリロードして監視を継続
   if (!found) {
-    const delay = Math.floor(Math.random() * 500 + 1500);
+    const delay = Math.floor(Math.random() * 500 + 1400);
     // ★追加：見つからなかった時のログ
     saveLog(`❌ 条件に合うチケットはありません。 ${delay}ms 後に再試行。`);
     
@@ -114,7 +122,7 @@ const checkAndLog = () => {
 // ==========================================
 const startApp = () => {
   const bodyText = document.body.innerText || "";
-  const targetDetailUrl = "https://relief-ticket.jp/events/artist/31/118";
+  const targetDetailUrl = "https://relief-ticket.jp/events/artist/40/127";
 
   // エラー画面なら5秒後にリダイレクト
   if (
@@ -130,7 +138,7 @@ const startApp = () => {
   // 監視ページ以外なら詳細ページへ飛ばす
   if (
     location.pathname === "/" ||
-    location.pathname === "/events/artist/31"
+    location.pathname === "/events/artist/40"
   ) {
     saveLog("監視対象ページへ移動します...");
     setTimeout(() => reloadWithCacheBust(targetDetailUrl), 500);
